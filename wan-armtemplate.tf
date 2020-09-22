@@ -4,7 +4,7 @@
 provider "azurerm" {
   features {}
   version         = ">2.21.0"
-  subscription_id = "dead8329-b12b-4816-8b97-943531d50a18"
+  subscription_id = "xxxxxxxxxxxxxxxxxxxx"
 }
 
 variable "resource_group_name" {
