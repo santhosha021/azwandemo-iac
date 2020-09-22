@@ -1,0 +1,93 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+         "wanName": {
+            "type": "string",
+            "metadata": {
+                "description": "Base name of the resource such as web app name and app service plan"
+            },
+            "minLength": 2
+        },
+        "hubname": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the Virtual Hub. A virtual hub is created inside a virtual wan."
+            }
+        },
+        "hubname1": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the second Virtual Hub. A virtual hub is created inside a virtual wan."
+            }
+        },
+          "vpngatewayname": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the Vpn Gateway. A vpn gateway is created inside a virtual hub."
+            }
+        }
+    },
+    "resources": [
+        {
+            "apiVersion": "2019-09-01",
+            "location": "australiaeast",
+            "name": "[parameters('wanName')]",
+            "properties": {
+                "virtualHubs": [],
+                "vpnSites": [],
+                "type": "Standard"
+            },
+            "type": "Microsoft.Network/virtualWans"
+        },
+        {
+            "type": "Microsoft.Network/virtualHubs",
+            "apiVersion": "2020-05-01",
+            "location": "australiaeast",
+            "name":  "[parameters('hubname')]",
+            "properties": {
+                "addressPrefix": "10.100.0.0/24",
+                "virtualWan": {
+                    "id": "[resourceId('Microsoft.Network/virtualWans',parameters('wanname'))]"
+                },
+                "sku": "Standard"
+            },
+            "tags": {}
+            
+        },
+        {
+            "type": "Microsoft.Network/virtualHubs",
+            "apiVersion": "2020-05-01",
+            "location": "westus",
+            "name":  "[parameters('hubname1')]",
+            "properties": {
+                "addressPrefix": "10.101.0.0/24",
+                "virtualWan": {
+                    "id": "[resourceId('Microsoft.Network/virtualWans',parameters('wanname'))]"
+                },
+                "sku": "Standard"
+            },
+            "tags": {}
+            
+        },
+        {
+             "type": "Microsoft.Network/vpnGateways",
+             "name": "[parameters('vpngatewayname')]",
+            "apiVersion": "2020-05-01",
+            "location": "australiaeast",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualHubs/', parameters('hubname'))]"
+                ],
+            "properties": {
+                "vpnGatewayScaleUnit": 1,
+                "virtualHub": {
+                    "id": "[resourceId('Microsoft.Network/virtualHubs',parameters('hubname'))]"
+                },
+                "bgpSettings": {
+                    "asn": 65515
+                }
+            }
+                
+        }
+    ]
+}

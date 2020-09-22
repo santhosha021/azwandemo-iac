@@ -1,0 +1,36 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+         "wanName": {
+            "type": "string",
+            "metadata": {
+                "description": "Base name of the resource such as web app name and app service plan"
+            },
+            "minLength": 2
+        },
+        "hubname": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the Virtual Hub. A virtual hub is created inside a virtual wan."
+            }
+        }        
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/virtualHubs",
+            "apiVersion": "2020-05-01",
+            "location": "westus",
+            "name":  "[parameters('hubname')]",
+            "properties": {
+                "addressPrefix": "10.102.0.0/24",
+                "virtualWan": {
+                    "id": "[resourceId('Microsoft.Network/virtualWans',parameters('wanname'))]"
+                },
+                "sku": "Standard"
+            },
+            "tags": {}
+            
+        }
+    ]
+}
