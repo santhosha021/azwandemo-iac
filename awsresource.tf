@@ -1,3 +1,5 @@
+
+#This file will create Customer gateway and VPC. After deployment, create Virtual gateway and enable VPN connection to Azure Virtual WAN. Provision EC2 instance to test connectivity.
 provider "aws" {
   region     = "ap-southeast-2"
  }
